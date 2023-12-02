@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2020 Projekt YuMi
+# Copyright (C) 2022 TeamWin Recovery Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,22 +14,25 @@
 # limitations under the License.
 #
 
-# Inherit from the common Open Source product configuration
-$(call inherit-product, $(SRC_TARGET_DIR)/product/base.mk)
+# Inherit from those products. Most specific first.
+$(call inherit-product, $(SRC_TARGET_DIR)/product/core_64_bit.mk)
+$(call inherit-product, $(SRC_TARGET_DIR)/product/aosp_base.mk)
 
-# Include any options that can't be included in BoardConfig.mk
+# Inherit from TWRP common configurations
+$(call inherit-product, vendor/twrp/config/common.mk)
+
+# Enable project quotas and casefolding for emulated storage without sdcardfs
+$(call inherit-product, $(SRC_TARGET_DIR)/product/emulated_storage.mk)
+
+# Inherit from a21s device
 $(call inherit-product, device/samsung/a21s/device.mk)
 
-# Charger
-PRODUCT_PACKAGES += \
-    charger_res_images
+# A21s uses dynamic partitions
+PRODUCT_USE_DYNAMIC_PARTITIONS := true
 
-# Nothing
-PRODUCT_COPY_FILES += $(call find-copy-subdir-files,*,device/samsung/a21s/recovery/root,recovery/root)
-
-## Device identifier. This must come after all inclusions
-PRODUCT_NAME := omni_a21s
+# Device identifier. This must come after all inclusions
 PRODUCT_DEVICE := a21s
+PRODUCT_NAME := twrp_a21s
+PRODUCT_BRAND := Samsung
 PRODUCT_MODEL := SM-A217F
-PRODUCT_BRAND := samsung
 PRODUCT_MANUFACTURER := samsung
